@@ -37,10 +37,10 @@ namespace CompareTables
             ofd.Title = "Выберите 1-й файл для сверки";
             
             if (ofd.ShowDialog() != DialogResult) //если юзер не выбрал файл
-            //{
-              //  MessageBox.Show("Вы не выбрали файл для открытия", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
-               // return;
-            //}
+            {
+                MessageBox.Show("Вы не выбрали файл для открытия", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             firstFile = ofd.FileName; // - путь к файлу
             File1.Content = ofd.FileName.Substring(ofd.FileName.LastIndexOf('\\') + 1);
         }
@@ -53,10 +53,10 @@ namespace CompareTables
             ofd.Title = "Выберите 2-й файл для сверки";
 
              if (ofd.ShowDialog() != DialogResult) //если юзер не выбрал файл
-            //{
-            //    MessageBox.Show("Вы не выбрали файл для открытия", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
+            {
+                MessageBox.Show("Вы не выбрали файл для открытия", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             secondFile = ofd.FileName; // - путь к файлу
             
             
