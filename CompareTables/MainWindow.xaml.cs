@@ -133,10 +133,11 @@ namespace CompareTables
                 {
                     
                     newWs.Cells[i,1] = 1; //свойство Cells только для записи, а Range только для чтения 
-                    //newWs.get_Range(i, 1).Font.Color = Excel.XlRgbColor.rgbGreen;
+                    
                 } else
                 {
                     newWs.Cells[i, 1] = 0;
+                    (newWs.Cells[i, 1] as Excel.Range).Interior.ColorIndex = 37;
                     // newWs.get_Range(i, 1).Font.Color = Excel.XlRgbColor.rgbMediumVioletRed;
                 }
 
