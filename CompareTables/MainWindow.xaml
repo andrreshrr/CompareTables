@@ -5,11 +5,75 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CompareTables"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="File1" Content="Выбрать файл 1" HorizontalAlignment="Left" Margin="103,136,0,0" VerticalAlignment="Top" Height="38" Width="102" Click="File1_Click"/>
-        <Button x:Name="File2" Content="Выбрать файл 2" HorizontalAlignment="Left" Margin="319,136,0,0" VerticalAlignment="Top" Height="38" Width="102" Click="File2_Click"/>
-        <Button x:Name="Action" Content="Do some fucking magic" HorizontalAlignment="Left" Margin="195,284,0,0" VerticalAlignment="Top" Height="41" Width="149" Click="Action_Click"/>
+        Title="MainWindow" Height="500" Width="500">
+    <Window.Resources>
+        <ControlTemplate TargetType="Button" x:Key="btTemplate">
+            <Border
+                BorderBrush="{TemplateBinding BorderBrush}" 
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Height="30"
+                Width="{TemplateBinding Width}"
+                >
+                <!--TemplateBinding - значение свойства "по умолчанию"-->
+
+                <Border.Background>
+                    <!--внутренность кнопки -->
+                    <SolidColorBrush x:Name="BorderColor" Color="Gainsboro" />
+                </Border.Background>
+                <ContentControl Margin="{TemplateBinding Padding}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Content="{TemplateBinding Content}"
+                    FontWeight="Bold"
+                    Foreground="DimGray"/>
+                <!-- расположение кнопки, шрифт внутри кнопки-->
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup Name="CommonStates">
+                        <VisualState Name="MouseOver">
+                            <!-- состояние, когда навели мышку-->
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="BorderColor"
+                                    Storyboard.TargetProperty="Color" To="White" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState Name="Normal">
+                            <!--нормальное состояние-->
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="BorderColor"
+                                         Storyboard.TargetProperty="Color" To="Gainsboro" />
+
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Grid Background="Silver">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!-- ректанглы для драг-н-дропа -->
+        <Rectangle x:Name="Field1"  Grid.Column="0" Fill="Silver" Grid.Row="0" Grid.RowSpan="2" Stroke="DimGray" StrokeDashArray="4 2" StrokeThickness="3" AllowDrop="True" DragEnter="field1Enter" DragLeave="field1Leave" Drop="File1_Drop"/>
+        <Rectangle  x:Name="Field2" Grid.Column="1" Fill="Silver" Grid.Row="0" Grid.RowSpan="2" Stroke="DimGray" StrokeDashArray="4 2" StrokeThickness="3" AllowDrop="True" DragEnter="field2Enter" DragLeave="field2Leave" Drop="File2_Drop"/>
+
+        <Button x:Name="File1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Content="Выберите файл 1" Template="{StaticResource btTemplate}" Click="File1_Click" Width="110" AllowDrop="True" DragEnter="field1Enter" DragLeave="field1Leave" Drop="File1_Drop"/>
+        <Button x:Name="File2" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Content="Выберите файл 2" Template="{StaticResource btTemplate}"  Click="File2_Click"  Width="110" AllowDrop="True" DragEnter="field2Enter" DragLeave="field2Leave" Drop="File2_Drop"/>
+        <Button x:Name="Action" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="Do some fucking magic" Template="{StaticResource btTemplate}"  Click="Action_Click"   Width="150"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Или перетащите файл 1 сюда" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"
+                    Foreground="DimGray" FontSize="14" AllowDrop="True" DragEnter="field1Enter" DragLeave="field1Leave" Drop="File1_Drop"/>
+        <Label Grid.Column="1" Grid.Row="1" Content="Или перетащите файл 2 сюда" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"
+                    Foreground="DimGray" FontSize="14" AllowDrop="True" DragEnter="field2Enter" DragLeave="field2Leave" Drop="File2_Drop"/>
+        <!-- <WrapPanel  x:Name="Field2" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Stroke="DimGray" StrokeDashArray="4 2" StrokeThickness="3" AllowDrop="True"/>
+        -->
 
     </Grid>
 </Window>
