@@ -77,18 +77,74 @@ namespace CompareTables
                 return;
             }
 
-            Excel.Application xlApp = new Excel.Application(); //создаем excel-приложение
+            /*
+            Excel.Application xlApp1 = new Excel.Application(); //создаём приложение Excel
+            Excel.Workbook xlWB1 = xlApp1.Workbooks.Open(firstFile, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+            Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+            Type.Missing, Type.Missing); //открываем наш файл           
+            Excel.Worksheet xlSht1 = (Excel.Worksheet)xlWB1.Worksheets.get_Item(1); //или так xlSht = xlWB.ActiveSheet //активный лист
+
+
+            //            int x = int.Parse(xlSht1.Cells[1, 1]);
+            var b = xlSht1.Range["A1"].Value2;
+                int d = 0;
+
+            /*
+            Excel.Application excApp = new Excel.Application(); // экземпляр приложения
+            Excel.Workbook excWb; //создаём экземпляр рабочей книги
+            Excel.Worksheet excWS; //экземпляр листа
+            excWb = excApp.Workbooks.Add();
+            excWS = (Excel.Worksheet)excWb.Worksheets.get_Item(1);
+
+            for (int j = 1; j < 10; j++)
+            {
+                excWS.Cells[1, j] = j;
+            }
+            Excel.Range rng = excWS.Range["A2"];
+            rng.Formula = "=SUM(A1:L1)";
+            rng.FormulaHidden = false;
+            */
+            //xlApp.Visible = true;
+            //xlApp.UserControl = true;
+
+            
+            Excel.Application xlApp1 = new Excel.Application(); //создаем excel-приложение
+            Excel.Application xlApp2 = new Excel.Application(); //создаем excel-приложение
+            Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
             Excel.Worksheet xlWS1; //excel-лист
-            xlWB1 = xlApp.Workbooks.Open(firstFile); //инициализируем переменные нашими фйлами
+            xlWB1 = xlApp1.Workbooks.Open(firstFile); //инициализируем переменные нашими фйлами
             xlWS1 =(Excel.Worksheet) xlWB1.Worksheets["Лист1"]; //или как там? кароче, индекс - название листа
 
             Excel.Workbook xlWB2; //excel-файл
             Excel.Worksheet xlWS2; //excel-лист
-            xlWB2 = xlApp.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
+            xlWB2 = xlApp2.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
             xlWS2 = (Excel.Worksheet)xlWB2.Worksheets["Лист1"]; //или как там? кароче, индекс - название листа
 
+            Excel.Workbook newWb = newApp.Workbooks.Add();
+            Excel.Worksheet newWs = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
+            string ind;
+            for (int i=1; i<10; i++)
+            {
 
+                ind = "A" + i.ToString();
+                if ((int)xlWS1.Range[ind].Value2 >= (int)xlWS2.Range[ind].Value2)
+                {
+                    
+                    newWs.Cells[i,1] = 1; //свойство Cells только для записи, а Range только для чтения 
+                    //newWs.get_Range(i, 1).Font.Color = Excel.XlRgbColor.rgbGreen;
+                } else
+                {
+                    newWs.Cells[i, 1] = 0;
+                    // newWs.get_Range(i, 1).Font.Color = Excel.XlRgbColor.rgbMediumVioletRed;
+                }
+
+            }
+
+            newApp.Visible = true;
+            newApp.UserControl = true;
+            
 
         }
 
