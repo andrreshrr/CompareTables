@@ -94,6 +94,7 @@ namespace CompareTables
                 return;
             }
 
+            int i = 0, j = 0;
       
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
@@ -107,29 +108,83 @@ namespace CompareTables
             xlWS2 = (Excel.Worksheet)xlWB2.Worksheets.get_Item(1); //в скобочках индекс листа, индексация начинается с единицы
             
             //КОД ДЛЯ НАХОЖДЕНИЯ ЧИСЛА СТРОК И СТОЛБЦОВ, его по-хорошему в функцию запихать какую
-            int rows = 1;
-            Excel.Range current_elem= xlWS1.Range["A" + rows.ToString()];
+            int rows1 = 1;
+            Excel.Range current_elem= xlWS1.Range["A" + rows1.ToString()];
             string gg = current_elem.Next.Value2.ToString();
-            while (xlWS1.Range["A" + rows.ToString()].Value2 != null)
+            while (xlWS1.Range["A" + rows1.ToString()].Value2 != null)
             {
-                rows++;
+                rows1++;
              
             }
                
-            int cols = 1;
+            int rows2 = 1;
+            Excel.Range current_elem2= xlWS2.Range["A" + rows2.ToString()];
+            string gg2 = current_elem2.Next.Value2.ToString();
+            while (xlWS2.Range["A" + rows2.ToString()].Value2 != null)
+            {
+                rows2++;
+             
+            }
+            
+            
+            /*int cols = 1;
             while (current_elem.Value2!=null)
             {
                 cols++;
                 current_elem = current_elem.Next;
                 
-            }
+            }*/
             //rows и cols - число строк+1 и число столбцов+1, для удобства в форе
 
-
+            int nErow=0;
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
-            string ind;
-            for (int j = 1; j < cols; j++)
+            string ind1,ind2;
+            while (i <= rows1 && j<= rows2)
+            {
+                ind1 = "A" + i.ToString();
+                ind2 = "A" + j.ToString();
+                if ((int) xlWS1.Range[ind1].Value2 == (int) xlWS2.Range[ind2].Value2)
+                {
+                    newWs.Cells[nErow, 1] = (int) xlWS1.Range[ind1].Value2;
+                    newWs.Cells[nErow, 2] = 2; //свойство Cells только для записи, а Range только для чтения 
+                    (newWs.Cells[nErow, 1] as Excel.Range).Interior.ColorIndex = 4; //изменили цвет
+                    nErow++;
+                    ind1 = "A" + (j + 1).ToString();
+                    if ((int) xlWS1.Range[ind1].Value2 == (int) xlWS2.Range[ind2].Value2)
+                    {
+                        ind1 = "A" + i.ToString();
+                        j++;
+                    }
+                    else
+                    {
+                        ind1 = "A" + i.ToString();
+                        i++;
+                    }
+                    
+                        
+                }
+                if ((int) xlWS1.Range[ind1].Value2 > (int) xlWS2.Range[ind2].Value2)
+                {
+                    //newWs.Cells[nErow, 1] = 2; //свойство Cells только для записи, а Range только для чтения 
+                    //(newWs.Cells[nErow, 1] as Excel.Range).Interior.ColorIndex = 4; //изменили цвет
+                    //nErow++;
+                    j++;
+                }
+                if ((int) xlWS1.Range[ind1].Value2 < (int) xlWS2.Range[ind2].Value2)
+                {
+                    //newWs.Cells[nErow, 1] = 2; //свойство Cells только для записи, а Range только для чтения 
+                    //(newWs.Cells[nErow, 1] as Excel.Range).Interior.ColorIndex = 4; //изменили цвет
+                    //nErow++;
+                    i++;
+                }
+            }
+            
+            
+            
+            
+            
+            /*for (int j = 1; j < cols; j++)
             {
                 for (int i = 1; i < rows; i++)
                 {
@@ -150,7 +205,7 @@ namespace CompareTables
 
                 }
 
-            }
+            }*/
             xlWB1.Close(false); //false значит не сохранять изменения, хотя мы ничего и не изменяли, но пусть
             xlWB2.Close(false);
            
