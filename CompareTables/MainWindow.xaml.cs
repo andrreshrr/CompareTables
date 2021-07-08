@@ -67,85 +67,96 @@ namespace CompareTables
 
         }
 
+        private string GetColumnName(int col_number) //преобразует номер в аналог обозначения столбца екселя (1-А, 2-B, 3-C, ... , 28 - AB) 
+        {
+            string result;
+            if (col_number > 0)
+            {
+                int alphabets = (col_number - 1) / 26;
+                int remainder = (col_number - 1) % 26;
+                result = ((char)('A' + remainder)).ToString();
+                if (alphabets > 0)
+                {
+                    result = GetColumnName(alphabets) + result;
+                }
+            }
+            else result = null;
+
+            return result;
+        }
 
         //нажатие на кнопку когда все файлы загружены!!
         private void Action_Click(object sender, RoutedEventArgs e)
         {
             if ((firstFile == null) || (secondFile == null))
             {
-                MessageBox.Show("Вы не выбрали файлы", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Вы не выбрали файлы", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            /*
-            Excel.Application xlApp1 = new Excel.Application(); //создаём приложение Excel
-            Excel.Workbook xlWB1 = xlApp1.Workbooks.Open(firstFile, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-            Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-            Type.Missing, Type.Missing); //открываем наш файл           
-            Excel.Worksheet xlSht1 = (Excel.Worksheet)xlWB1.Worksheets.get_Item(1); //или так xlSht = xlWB.ActiveSheet //активный лист
-
-
-            //            int x = int.Parse(xlSht1.Cells[1, 1]);
-            var b = xlSht1.Range["A1"].Value2;
-                int d = 0;
-
-            /*
-            Excel.Application excApp = new Excel.Application(); // экземпляр приложения
-            Excel.Workbook excWb; //создаём экземпляр рабочей книги
-            Excel.Worksheet excWS; //экземпляр листа
-            excWb = excApp.Workbooks.Add();
-            excWS = (Excel.Worksheet)excWb.Worksheets.get_Item(1);
-
-            for (int j = 1; j < 10; j++)
-            {
-                excWS.Cells[1, j] = j;
-            }
-            Excel.Range rng = excWS.Range["A2"];
-            rng.Formula = "=SUM(A1:L1)";
-            rng.FormulaHidden = false;
-            */
-            //xlApp.Visible = true;
-            //xlApp.UserControl = true;
-
-            
-            Excel.Application xlApp1 = new Excel.Application(); //создаем excel-приложение
-            Excel.Application xlApp2 = new Excel.Application(); //создаем excel-приложение
+      
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
             Excel.Worksheet xlWS1; //excel-лист
-            xlWB1 = xlApp1.Workbooks.Open(firstFile); //инициализируем переменные нашими фйлами
-            xlWS1 =(Excel.Worksheet) xlWB1.Worksheets["Лист1"]; //или как там? кароче, индекс - название листа
+            xlWB1 = newApp.Workbooks.Open(firstFile); //инициализируем переменные нашими фйлами
+            xlWS1 =(Excel.Worksheet) xlWB1.Worksheets.get_Item(1); //в скобочках индекс листа, индексация начинается с единицы
 
             Excel.Workbook xlWB2; //excel-файл
             Excel.Worksheet xlWS2; //excel-лист
-            xlWB2 = xlApp2.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
-            xlWS2 = (Excel.Worksheet)xlWB2.Worksheets["Лист1"]; //или как там? кароче, индекс - название листа
+            xlWB2 = newApp.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
+            xlWS2 = (Excel.Worksheet)xlWB2.Worksheets.get_Item(1); //в скобочках индекс листа, индексация начинается с единицы
+            
+            //КОД ДЛЯ НАХОЖДЕНИЯ ЧИСЛА СТРОК И СТОЛБЦОВ, его по-хорошему в функцию запихать какую
+            int rows = 1;
+            Excel.Range current_elem= xlWS1.Range["A" + rows.ToString()];
+            string gg = current_elem.Next.Value2.ToString();
+            while (xlWS1.Range["A" + rows.ToString()].Value2 != null)
+            {
+                rows++;
+             
+            }
+               
+            int cols = 1;
+            while (current_elem.Value2!=null)
+            {
+                cols++;
+                current_elem = current_elem.Next;
+                
+            }
+            //rows и cols - число строк+1 и число столбцов+1, для удобства в форе
+
 
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
             string ind;
-            for (int i=1; i<10; i++)
+            for (int j = 1; j < cols; j++)
             {
+                for (int i = 1; i < rows; i++)
+                {
 
-                ind = "A" + i.ToString();
-                if ((int)xlWS1.Range[ind].Value2 >= (int)xlWS2.Range[ind].Value2)
-                {
-                    
-                    newWs.Cells[i,1] = 1; //свойство Cells только для записи, а Range только для чтения 
-                    
-                } else
-                {
-                    newWs.Cells[i, 1] = 0;
-                    (newWs.Cells[i, 1] as Excel.Range).Interior.ColorIndex = 37;
-                    // newWs.get_Range(i, 1).Font.Color = Excel.XlRgbColor.rgbMediumVioletRed;
+                    ind = GetColumnName(j) + i.ToString();
+                    if ((int)xlWS1.Range[ind].Value2 >= (int)xlWS2.Range[ind].Value2)
+                    {
+                        newWs.Cells[i, j] = 1; //свойство Cells только для записи, а Range только для чтения 
+
+                        (newWs.Cells[i,j] as Excel.Range).Interior.ColorIndex = 4; //изменили цвет 
+
+                    }
+                    else
+                    {
+                        newWs.Cells[i, j] = 0;
+                        (newWs.Cells[i, j] as Excel.Range).Interior.ColorIndex = 3; //red
+                    }
+
                 }
 
             }
+            xlWB1.Close(false); //false значит не сохранять изменения, хотя мы ничего и не изменяли, но пусть
+            xlWB2.Close(false);
+           
 
             newApp.Visible = true;
             newApp.UserControl = true;
-            
 
         }
 
