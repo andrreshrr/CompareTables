@@ -85,6 +85,35 @@ namespace CompareTables
             return result;
         }
 
+        private int GetRows(Excel.Worksheet xlWS1)
+        {
+            //КОД ДЛЯ НАХОЖДЕНИЯ ЧИСЛА СТРОК И СТОЛБЦОВ, его по-хорошему в функцию запихать какую
+            int rows = 1;
+            Excel.Range current_elem = xlWS1.Range["A" + rows.ToString()];
+       
+            while (xlWS1.Range["A" + rows.ToString()].Value2 != null)
+            {
+                rows++;
+
+            }
+            return rows;
+            
+            //rows и cols - число строк+1 и число столбцов+1, для удобства в форе
+        }
+
+        private int GetCols(Excel.Worksheet xlWS1)
+        {
+            Excel.Range current_elem = xlWS1.Range["A1"];
+            int cols = 1;
+            while (current_elem.Value2 != null)
+            {
+                cols++;
+                current_elem = current_elem.Next;
+
+            }
+            return cols;
+        }
+
         //нажатие на кнопку когда все файлы загружены!!
         private void Action_Click(object sender, RoutedEventArgs e)
         {
@@ -105,27 +134,80 @@ namespace CompareTables
             Excel.Worksheet xlWS2; //excel-лист
             xlWB2 = newApp.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
             xlWS2 = (Excel.Worksheet)xlWB2.Worksheets.get_Item(1); //в скобочках индекс листа, индексация начинается с единицы
+
+           
+
+            int cols1 = GetCols(xlWS1);     //cols1 и rows1 число солбцов+1 и строк+1 первого листа первой таблицы
+            int rows1 = GetRows(xlWS1);
+            int cols2 = GetCols(xlWS2);
+            int rows2 = GetRows(xlWS2);
+
+            int nErow = 1; //строка в новой таблице
+
+            string ind1, ind2;
             
-            //КОД ДЛЯ НАХОЖДЕНИЯ ЧИСЛА СТРОК И СТОЛБЦОВ, его по-хорошему в функцию запихать какую
-            int rows = 1;
-            Excel.Range current_elem= xlWS1.Range["A" + rows.ToString()];
-            string gg = current_elem.Next.Value2.ToString();
-            while (xlWS1.Range["A" + rows.ToString()].Value2 != null)
+            int i = 0, j=0;
+
+          
+
+            var curCell1 = xlWS1.Range["A1"];
+            List<int> data1 = new List<int>();
+            while (curCell1.Value2 != null)
             {
-                rows++;
-             
-            }
-               
-            int cols = 1;
-            while (current_elem.Value2!=null)
-            {
-                cols++;
-                current_elem = current_elem.Next;
+                i++;
+                ind1 = "A" + i.ToString();
+                data1.Add((int)curCell1.Value2);
+                curCell1 = xlWS1.Range[ind1];
                 
+            } 
+
+            var curCell2 = xlWS2.Range["A1"];
+            List<int> data2 = new List<int>();
+            while (curCell2.Value2 != null)
+            {
+                j++;
+                ind2 = "A" + j.ToString();
+                data2.Add((int)curCell2.Value2);
+                curCell2 = xlWS2.Range[ind2];
+
             }
-            //rows и cols - число строк+1 и число столбцов+1, для удобства в форе
 
+            var res1 = data2.Except(data1);
+            var res2 = data1.Except(data2);
+            //УЖЕ ЭТИ ДВА РЕЗА ОТПРАВЛЯТЬ В ИТОГОВУЮ ТАБЛИЦУ
+            Excel.Workbook newWb = newApp.Workbooks.Add();
+            Excel.Worksheet newWs1 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
+           
 
+            i = 1;
+            foreach (var item in res1)
+            {
+                if (i < rows1)
+                {
+                    newWs1.Cells[i, 1] = item;
+                    i++;
+                }
+                else break;
+
+            }
+
+            j = 1;
+            
+            newWb.Worksheets.Add();
+            Excel.Worksheet newWs2 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
+
+            foreach (var item in res2)
+            {
+                if (j < rows2)
+                {
+                    newWs2.Cells[j, 1] = item;
+                    j++;
+                }
+                else break;
+
+            }
+
+            /*
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
             string ind;
@@ -150,7 +232,8 @@ namespace CompareTables
 
                 }
 
-            }
+            } */
+
             xlWB1.Close(false); //false значит не сохранять изменения, хотя мы ничего и не изменяли, но пусть
             xlWB2.Close(false);
            
