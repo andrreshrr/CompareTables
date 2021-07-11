@@ -269,6 +269,7 @@ namespace CompareTables
 
             Field2.Fill = Brushes.Silver;
 
+            Int32 c = 100;
 
         }
 

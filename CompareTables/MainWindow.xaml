@@ -74,6 +74,8 @@
                     Foreground="DimGray" FontSize="14" AllowDrop="True" DragEnter="field2Enter" DragLeave="field2Leave" Drop="File2_Drop"/>
         <!-- <WrapPanel  x:Name="Field2" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Stroke="DimGray" StrokeDashArray="4 2" StrokeThickness="3" AllowDrop="True"/>
         -->
+        <TextBox Grid.Row="2" Grid.Column="0" Margin="50,15,50,117" x:Name="text1" TextWrapping="Wrap" />
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="50,15,50,117" x:Name="text2" TextWrapping="Wrap" Height="Auto"/>
 
     </Grid>
 </Window>
