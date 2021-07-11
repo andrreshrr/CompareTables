@@ -66,74 +66,33 @@ namespace CompareTables
 
 
         }
-
-        private string GetColumnName(int col_number) //преобразует номер в аналог обозначения столбца екселя (1-А, 2-B, 3-C, ... , 28 - AB) 
+        
+        
+        private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS)
         {
-            string result;
-            if (col_number > 0)
-            {
-                int alphabets = (col_number - 1) / 26;
-                int remainder = (col_number - 1) % 26;
-                result = ((char)('A' + remainder)).ToString();
-                if (alphabets > 0)
-                {
-                    result = GetColumnName( alphabets) + result;
-                }
-            }
-            else result = null;
-
-            return result;
-        }
-
-        private int GetRows(ref Excel.Worksheet xlWS1)
-        {
-            //КОД ДЛЯ НАХОЖДЕНИЯ ЧИСЛА СТРОК И СТОЛБЦОВ, его по-хорошему в функцию запихать какую
-            int rows = 1;
-            Excel.Range current_elem = xlWS1.Range["A" + rows.ToString()];
-       
-            while (xlWS1.Range["A" + rows.ToString()].Value2 != null)
-            {
-                rows++;
-
-            }
-            return rows;
-            
-            //rows и cols - число строк+1 и число столбцов+1, для удобства в форе
-        }
-
-        private int GetCols(ref Excel.Worksheet xlWS1)
-        {
-            Excel.Range current_elem = xlWS1.Range["A1"];
-            int cols = 1;
-            while (current_elem.Value2 != null)
-            {
-                cols++;
-                current_elem = current_elem.Next;
-
-            }
-            return cols;
-        }
-
-        private List <int> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, ref int count_rows)
-        {            
-            var curRange = current_xlWS.Range["A1:A" + (count_rows-1).ToString()];
-            
-            List<int> res = new List<int>();
+            List<long> res = new List<long>();
             int i = 1;
-            
-            Excel.Range current_elem = current_xlWS.Range["A" + count_rows.ToString()];
             var cur = current_xlWS.Range["A" + i.ToString()].Value2;
+            long inp;
             while (cur != null)
             {
-                res.Add((int)cur);
+               /* res.Add((long)cur);
+                cur = current_xlWS.Range["A" + i.ToString()].Value2;
+                i++;*/
+
+                
+                 string[] ttl = Convert.ToString(cur).Split(new char[] {'-'});
+                if (ttl[0] == "N")
+                {
+                    res.Add(Convert.ToInt64(ttl[1])); 
+                }
+                else if (Int64.TryParse(ttl[0],out inp))
+                {
+                    res.Add(inp);
+                }
                 cur = current_xlWS.Range["A" + i.ToString()].Value2;
                 i++;
-
             }
-
-            
-
-
             return res;
         }
         //нажатие на кнопку когда все файлы загружены!!
@@ -145,7 +104,6 @@ namespace CompareTables
                 return;
             }
 
-      
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
             Excel.Worksheet xlWS1; //excel-лист
@@ -159,14 +117,11 @@ namespace CompareTables
 
            
 
-            int cols1 = GetCols(ref xlWS1);     //cols1 и rows1 число солбцов+1 и строк+1 первого листа первой таблицы
-            int rows1 = GetRows(ref xlWS1);
-            int cols2 = GetCols(ref xlWS2);
-            int rows2 = GetRows(ref xlWS2);
-
+            
+          
        
-            var data1 = CreateDataListFromColumn(ref xlWS1, ref rows1); //создаем из первой колонки лист
-            var data2 = CreateDataListFromColumn(ref xlWS2, ref rows2);       
+            var data1 = CreateDataListFromColumn(ref xlWS1); //создаем из первой колонки лист
+            var data2 = CreateDataListFromColumn(ref xlWS2);       
             
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs1 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
@@ -175,12 +130,10 @@ namespace CompareTables
             int i = 1;
             foreach (var item in data2.Except(data1))
             {
-                if (i < rows1)
-                {
-                    newWs1.Cells[i, 1] = item;
-                    i++;
-                }
-                else break;
+                
+                newWs1.Cells[i, 1] = item;
+                i++;
+                
 
             }
         
@@ -192,13 +145,8 @@ namespace CompareTables
 
             foreach (var item in data1.Except(data2))
             {
-                if (i < rows2)
-                {
-                    newWs2.Cells[i, 1] = item;
-                    i++;
-                }
-                else break;
-
+                newWs2.Cells[i, 1] = item;
+                i++;
             }
 
             
