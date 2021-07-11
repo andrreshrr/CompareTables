@@ -68,11 +68,11 @@ namespace CompareTables
         }
         
         
-        private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS)
+        private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startCell)
         {
             List<long> res = new List<long>();
-            int i = 1;
-            var cur = current_xlWS.Range["A" + i.ToString()].Value2;
+            int i = Convert.ToInt32(startCell[1]);
+            var cur = current_xlWS.Range[startCell].Value2;
             long inp;
             while (cur != null)
             {
@@ -90,8 +90,9 @@ namespace CompareTables
                 {
                     res.Add(inp);
                 }
-                cur = current_xlWS.Range["A" + i.ToString()].Value2;
                 i++;
+                cur = current_xlWS.Range[startCell[0] + i.ToString()].Value2;
+                
             }
             return res;
         }
@@ -115,13 +116,14 @@ namespace CompareTables
             xlWB2 = newApp.Workbooks.Open(secondFile); //инициализируем переменные нашими фйлами
             xlWS2 = (Excel.Worksheet)xlWB2.Worksheets.get_Item(1); //в скобочках индекс листа, индексация начинается с единицы
 
-           
 
-            
-          
-       
-            var data1 = CreateDataListFromColumn(ref xlWS1); //создаем из первой колонки лист
-            var data2 = CreateDataListFromColumn(ref xlWS2);       
+
+
+
+            string startCell1 = text1.Text!="" ? text1.Text : "A1";
+            string startCell2 = text2.Text!="" ? text2.Text : "A1";
+            var data1 = CreateDataListFromColumn(ref xlWS1, startCell1); //создаем из первой колонки лист
+            var data2 = CreateDataListFromColumn(ref xlWS2, startCell2);       
             
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs1 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
