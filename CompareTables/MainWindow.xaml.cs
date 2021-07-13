@@ -27,6 +27,7 @@ namespace CompareTables
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         private void File1_Click(object sender, RoutedEventArgs e)
@@ -71,7 +72,7 @@ namespace CompareTables
         private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startCell)
         {
             List<long> res = new List<long>();
-            int i = Convert.ToInt32(startCell[1]);
+            int i = Convert.ToInt32(startCell[1]) - 48; //"1"=49 => "1" - 48 = 1
             var cur = current_xlWS.Range[startCell].Value2;
             long inp;
             while (cur != null)
@@ -104,7 +105,16 @@ namespace CompareTables
                 MessageBox.Show("Вы не выбрали файлы", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
+            /*for (int j = 0; j < VisualTreeHelper.GetChildrenCount(fullGrid); ++j) {
+                var item = VisualTreeHelper.GetChild(fullGrid, j);
+                if ((item is TextBox) || (item is Button) || (item is Label) || (item is Rectangle))
+                {
+                    var k = item as UIElement;
+                    k.Visibility = Visibility.Hidden;
+                }
+            }*/
+       
+            
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
             Excel.Worksheet xlWS1; //excel-лист
@@ -123,13 +133,16 @@ namespace CompareTables
             string startCell1 = text1.Text!="" ? text1.Text : "A1";
             string startCell2 = text2.Text!="" ? text2.Text : "A1";
             var data1 = CreateDataListFromColumn(ref xlWS1, startCell1); //создаем из первой колонки лист
-            var data2 = CreateDataListFromColumn(ref xlWS2, startCell2);       
+            var data2 = CreateDataListFromColumn(ref xlWS2, startCell2);
+
             
             Excel.Workbook newWb = newApp.Workbooks.Add();
             Excel.Worksheet newWs1 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
-           
+            //string gk = "Строки " + File1.Content + ", отс. в " + File2.Content;
 
-            int i = 1;
+            
+            int i = 2;
+            newWs1.Cells[1, 1] = "Элементы из " + File1.Content + ", которых нет в " + File1.Content;
             foreach (var item in data2.Except(data1))
             {
                 
@@ -140,19 +153,21 @@ namespace CompareTables
             }
         
 
-            i = 1;
+            i = 2;
             
             newWb.Worksheets.Add();
             Excel.Worksheet newWs2 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
-
+            newWs2.Cells[1, 1] = "Элементы из " + File2.Content + ", которых нет в " + File1.Content;
             foreach (var item in data1.Except(data2))
             {
                 newWs2.Cells[i, 1] = item;
                 i++;
             }
 
-            
-
+            /*foreach (Panel item in fullGrid.Children)
+                item.Visibility = Visibility.Visible;
+            warning.Visibility = Visibility.Hidden;*/
+            //mainWindow.Visibility=Visibility.Visible;
             xlWB1.Close(false); //false значит не сохранять изменения, хотя мы ничего и не изменяли, но пусть
             xlWB2.Close(false);
            
@@ -178,6 +193,7 @@ namespace CompareTables
             {
                 e.Effects = DragDropEffects.Copy;
                 Field2.Fill = Brushes.White;
+                lineFix.Stroke = Brushes.White;
             }
             
            // File2.Visibility = Visibility.Hidden;
@@ -186,11 +202,13 @@ namespace CompareTables
         private void field1Leave(object sender, DragEventArgs e)
         {
             Field1.Fill = Brushes.Silver;
+            
             //File1.Visibility = Visibility.Visible;
         }
         private void field2Leave(object sender, DragEventArgs e)
         {
             Field2.Fill = Brushes.Silver;
+            lineFix.Stroke = Brushes.Silver;
             //File2.Visibility = Visibility.Visible;
         }
 
