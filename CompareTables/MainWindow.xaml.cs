@@ -119,9 +119,9 @@ namespace CompareTables
             List<DataPart> res = new List<DataPart>();
             int i = Convert.ToInt32(startIdCell[1]) - 48; //"1"=49 => "1" - 48 = 1
             var curId = current_xlWS.Range[startIdCell].Value2;
-            var curName = current_xlWS.Range[startNameCell].Value2!="" ? current_xlWS.Range[startNameCell].Value2 : "НЕТДАННЫХ";
-            var curNumber = current_xlWS.Range[startNumberCell].Value2 !="" ? current_xlWS.Range[startNumberCell].Value2: "НЕТДАННЫХ";
-            var curTotal = current_xlWS.Range[startTotalCell].Value2 !="" ? current_xlWS.Range[startTotalCell].Value2: "НЕТДАННЫХ";
+            var curName =current_xlWS.Range[startNameCell].Value2;
+            var curNumber = current_xlWS.Range[startNumberCell].Value2;
+            var curTotal =current_xlWS.Range[startTotalCell].Value2;
             long inp;
             while (curId != null)
             {
@@ -136,9 +136,9 @@ namespace CompareTables
                 }
                 i++;
                 curId = current_xlWS.Range[startIdCell[0] + i.ToString()].Value2;
-                curName = current_xlWS.Range[startNameCell[0] + i.ToString()].Value2!="" ? current_xlWS.Range[startNameCell[0] + i.ToString()].Value2: "НЕТДАННЫХ";
-                curNumber = current_xlWS.Range[startNumberCell[0] + i.ToString()].Value2!="" ? current_xlWS.Range[startNumberCell[0] + i.ToString()].Value2: "НЕТДАННЫХ";
-                curTotal = current_xlWS.Range[startTotalCell[0] + i.ToString()].Value2!="" ?current_xlWS.Range[startTotalCell[0] + i.ToString()].Value2 : "НЕТДАННЫХ";
+                curName = current_xlWS.Range[startNameCell[0] + i.ToString()].Value2;
+                curNumber = current_xlWS.Range[startNumberCell[0] + i.ToString()].Value2;
+                curTotal = current_xlWS.Range[startTotalCell[0] + i.ToString()].Value2;
             }
             return res;
         }
@@ -200,8 +200,12 @@ namespace CompareTables
             //string gk = "Строки " + File1.Content + ", отс. в " + File2.Content;
 
             
-            int i = 2;
+            int i =3;
             newWs1.Cells[1, 1] = "Элементы из " + File2.Content + ", которых нет в " + File1.Content;
+            newWs1.Cells[2, 1] = "Индефикационные номера" ;
+            newWs1.Cells[2, 2] = "Наименование" ;
+            newWs1.Cells[2, 3] = "Сумма" ;
+            newWs1.Cells[2, 4] = "Количество" ;
             foreach (var item in data2.Except(data1))
             {
                 newWs1.Cells[i, 1] = item.Id;
@@ -212,15 +216,15 @@ namespace CompareTables
             }
         
 
-            i = 2;
+            i = 3;
             
             newWb.Worksheets.Add();
             Excel.Worksheet newWs2 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
             newWs2.Cells[1, 1] = "Элементы из " + File1.Content + ", которых нет в " + File2.Content;
             newWs2.Cells[2, 1] = "Индефикационные номера" ;
             newWs2.Cells[2, 2] = "Наименование" ;
-            newWs2.Cells[2, 3] = "Количество" ;
-            newWs2.Cells[2, 4] = "Сумма" ;
+            newWs2.Cells[2, 3] = "Сумма" ;
+            newWs2.Cells[2, 4] = "Количество" ;
             foreach (var item in data1.Except(data2))
             {
                 newWs2.Cells[i, 1] = item.Id;
