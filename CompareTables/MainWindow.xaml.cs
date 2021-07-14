@@ -91,28 +91,7 @@ namespace CompareTables
         }
         
         
-        /*private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startCell)
-        {
-            List<long> res = new List<long>();
-            int i = Convert.ToInt32(startCell[1]) - 48; //"1"=49 => "1" - 48 = 1
-            var cur = current_xlWS.Range[startCell].Value2;
-            long inp;
-            while (cur != null)
-            {
-                string[] ttl = Convert.ToString(cur).Split(new char[] {'-'});
-                if (ttl[0] == "N")
-                {
-                    res.Add(Convert.ToInt64(ttl[1])); 
-                }
-                else if (Int64.TryParse(ttl[0],out inp))
-                {
-                    res.Add(inp);
-                }
-                i++;
-                cur = current_xlWS.Range[startCell[0] + i.ToString()].Value2;
-            }
-            return res;
-        }*/
+       
         
         private List <DataPart> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startIdCell, string startNameCell, string startNumberCell, string startTotalCell)
         {
@@ -149,8 +128,9 @@ namespace CompareTables
             
             wait1.Visibility = Visibility.Visible; // делаю видимыми ректангел и лейбл А ОН НЕТ            
             wait2.Visibility = Visibility.Visible;
-
-            if ((firstFile == null) || (secondFile == null))
+            
+            
+                if ((firstFile == null) || (secondFile == null))
             {
                 MessageBox.Show("Вы не выбрали файлы", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -158,15 +138,13 @@ namespace CompareTables
                 wait2.Visibility = Visibility.Hidden;
                 return;
             }
-            /*for (int j = 0; j < VisualTreeHelper.GetChildrenCount(fullGrid); ++j) {
-                var item = VisualTreeHelper.GetChild(fullGrid, j);
-                if ((item is TextBox) || (item is Button) || (item is Label) || (item is Rectangle))
-                {
-                    var k = item as UIElement;
-                    k.Visibility = Visibility.Hidden;
-                }
-            }*/
-           
+
+            if (MessageBox.Show($"Начать сравнение файлов: {File2.Content} и {File2.Content}?", "Вы уверены?", MessageBoxButton.YesNo)==MessageBoxResult.No){
+                wait1.Visibility = Visibility.Hidden;
+                wait2.Visibility = Visibility.Hidden;
+                return;
+            }
+            
 
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
