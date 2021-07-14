@@ -139,7 +139,7 @@ namespace CompareTables
                 return;
             }
 
-            if (MessageBox.Show($"Начать сравнение файлов: {File2.Content} и {File2.Content}?", "Вы уверены?", MessageBoxButton.YesNo)==MessageBoxResult.No){
+            if (MessageBox.Show($"Начать сравнение файлов: {File1.Content} и {File2.Content}?", "Вы уверены?", MessageBoxButton.YesNo)==MessageBoxResult.No){
                 wait1.Visibility = Visibility.Hidden;
                 wait2.Visibility = Visibility.Hidden;
                 return;
@@ -321,5 +321,9 @@ namespace CompareTables
 
         }
 
+        private void text1_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!((e.Text[0] >= 'A' && e.Text[0] <= 'Z') || (e.Text[0] >= '0' && e.Text[0] <= '9'))) e.Handled = true;
+        }
     }
 }
