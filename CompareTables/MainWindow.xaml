@@ -85,19 +85,19 @@
 
         <Label  Content="1-ая ячейка названий файла 1:" Margin="10,40,60, 95" Grid.Row="2" FontWeight="Bold" Foreground="DimGray" FontSize="14"/>
         <Label Grid.Row="2" Grid.Column="1" Content="1-ая ячейка названий файла 2:" Margin="10,40,60,95" FontWeight="Bold" Foreground="DimGray" FontSize="14" Grid.RowSpan="2"/>
-        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 45,70,120"  TextWrapping="Wrap" x:Name="text1name" />
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 45,70,120"  TextWrapping="Wrap" x:Name="text2name" />
+        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 45,70,120"  Text="B1" TextWrapping="Wrap" x:Name="text1name" />
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 45,70,120"  Text="B1" TextWrapping="Wrap" x:Name="text2name" />
 
 
         <Label  Content="1-ая ячейка суммы файла 1:" Margin="10,75,60,60" Grid.Row="2" FontWeight="Bold" Foreground="DimGray" FontSize="14"/>
         <Label Grid.Row="2" Grid.Column="1" Content="1-ая ячейка суммы файла 2:" Margin="10,75,60,60" FontWeight="Bold" Foreground="DimGray" FontSize="14" Grid.RowSpan="2"/>
-        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 80, 70, 85"  TextWrapping="Wrap"  x:Name="text1sum"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 80, 70, 85"  TextWrapping="Wrap" x:Name="text2sum"/>
+        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 80, 70, 85"  Text="D1" TextWrapping="Wrap"  x:Name="text1sum"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 80, 70, 85"  Text="D1" TextWrapping="Wrap" x:Name="text2sum"/>
 
         <Label  Content="1-ая ячейка количества файла 1:" Margin="10,110,60,25" Grid.Row="2" FontWeight="Bold" Foreground="DimGray" FontSize="14"/>
         <Label Grid.Row="2" Grid.Column="1" Content="1-ая ячейка количества файла 2:" Margin="10,110,60,25" FontWeight="Bold" Foreground="DimGray" FontSize="14" Grid.RowSpan="2"/>
-        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 115,70,50"  TextWrapping="Wrap" x:Name="text1count"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 115,70,50"  TextWrapping="Wrap" x:Name="text2count" />
+        <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 115,70,50" Text="C1" TextWrapping="Wrap" x:Name="text1count"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 115,70,50" Text="C1" TextWrapping="Wrap" x:Name="text2count" />
 <!--
         <Rectangle  x:Name="wait0" Fill="AliceBlue" Grid.ColumnSpan="2" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="200"/>
      -->

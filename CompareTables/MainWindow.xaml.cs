@@ -20,6 +20,25 @@ namespace CompareTables
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    public class DataPart: IEquatable<DataPart>
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Number { get; set; }
+        public string Total { get; set; }
+
+        public bool Equals(DataPart other)
+        {
+            if (other is null)
+                return false;
+
+            return this.Id == other.Id;
+        }
+
+        //public override bool Equals(object obj) => Equals(obj as DataPart);
+        public override int GetHashCode() => (Id).GetHashCode();
+    }
+    
     public partial class MainWindow : Window
     {
         private string firstFile = null;
@@ -72,7 +91,7 @@ namespace CompareTables
         }
         
         
-        private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startCell)
+        /*private List <long> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startCell)
         {
             List<long> res = new List<long>();
             int i = Convert.ToInt32(startCell[1]) - 48; //"1"=49 => "1" - 48 = 1
@@ -80,12 +99,7 @@ namespace CompareTables
             long inp;
             while (cur != null)
             {
-               /* res.Add((long)cur);
-                cur = current_xlWS.Range["A" + i.ToString()].Value2;
-                i++;*/
-
-                
-                 string[] ttl = Convert.ToString(cur).Split(new char[] {'-'});
+                string[] ttl = Convert.ToString(cur).Split(new char[] {'-'});
                 if (ttl[0] == "N")
                 {
                     res.Add(Convert.ToInt64(ttl[1])); 
@@ -96,14 +110,43 @@ namespace CompareTables
                 }
                 i++;
                 cur = current_xlWS.Range[startCell[0] + i.ToString()].Value2;
-                
+            }
+            return res;
+        }*/
+        
+        private List <DataPart> CreateDataListFromColumn(ref Excel.Worksheet current_xlWS, string startIdCell, string startNameCell, string startNumberCell, string startTotalCell)
+        {
+            List<DataPart> res = new List<DataPart>();
+            int i = Convert.ToInt32(startIdCell[1]) - 48; //"1"=49 => "1" - 48 = 1
+            var curId = current_xlWS.Range[startIdCell].Value2;
+            var curName = current_xlWS.Range[startNameCell].Value2!="" ? current_xlWS.Range[startNameCell].Value2 : "НЕТДАННЫХ";
+            var curNumber = current_xlWS.Range[startNumberCell].Value2 !="" ? current_xlWS.Range[startNumberCell].Value2: "НЕТДАННЫХ";
+            var curTotal = current_xlWS.Range[startTotalCell].Value2 !="" ? current_xlWS.Range[startTotalCell].Value2: "НЕТДАННЫХ";
+            long inp;
+            while (curId != null)
+            {
+                string[] ttl = Convert.ToString(curId).Split(new char[] {'-'});
+                if (ttl[0] == "N")
+                {
+                    res.Add(new DataPart() {Id=Convert.ToInt64(ttl[1]), Name = Convert.ToString(curName), Number = Convert.ToString(curNumber) ,Total = Convert.ToString(curTotal)}); 
+                }
+                else if (Int64.TryParse(ttl[0],out inp))
+                {
+                    res.Add(new DataPart() {Id=inp,  Name = Convert.ToString(curName), Number = Convert.ToString(curNumber) ,Total = Convert.ToString(curTotal)});
+                }
+                i++;
+                curId = current_xlWS.Range[startIdCell[0] + i.ToString()].Value2;
+                curName = current_xlWS.Range[startNameCell[0] + i.ToString()].Value2!="" ? current_xlWS.Range[startNameCell[0] + i.ToString()].Value2: "НЕТДАННЫХ";
+                curNumber = current_xlWS.Range[startNumberCell[0] + i.ToString()].Value2!="" ? current_xlWS.Range[startNumberCell[0] + i.ToString()].Value2: "НЕТДАННЫХ";
+                curTotal = current_xlWS.Range[startTotalCell[0] + i.ToString()].Value2!="" ?current_xlWS.Range[startTotalCell[0] + i.ToString()].Value2 : "НЕТДАННЫХ";
             }
             return res;
         }
+        
         //нажатие на кнопку когда все файлы загружены!!
         private void Action_Click(object sender, RoutedEventArgs e)
         {
-
+            
             wait1.Visibility = Visibility.Visible; // делаю видимыми ректангел и лейбл А ОН НЕТ            
             wait2.Visibility = Visibility.Visible;
 
@@ -140,10 +183,16 @@ namespace CompareTables
 
 
 
-            string startCell1 = text1.Text!="" ? text1.Text : "A1";
-            string startCell2 = text2.Text!="" ? text2.Text : "A1";
-            var data1 = CreateDataListFromColumn(ref xlWS1, startCell1); //создаем из первой колонки лист
-            var data2 = CreateDataListFromColumn(ref xlWS2, startCell2);
+            string startIdCell1 = text1.Text!="" ? text1.Text : "A1";
+            string startIdCell2 = text2.Text!="" ? text2.Text : "A1";
+            string startNameCell1 = text1name.Text!="" ? text1name.Text : "B1";
+            string startNameCell2 = text2name.Text!="" ? text2name.Text : "B1";
+            string startNumberCell1 = text1count.Text!="" ? text1count.Text : "C1";
+            string startNumberCell2 = text2count.Text!="" ? text2count.Text : "C1";
+            string startTotalCell1 = text1sum.Text!="" ? text1sum.Text : "D1";
+            string startTotalCell2 = text2sum.Text!="" ? text2sum.Text : "D1";
+            var data1 = CreateDataListFromColumn(ref xlWS1, startIdCell1, startNameCell1,startNumberCell1,startTotalCell1); //создаем из первой колонки лист
+            var data2 = CreateDataListFromColumn(ref xlWS2, startIdCell2, startNameCell2,startNumberCell2,startTotalCell2);
 
             
             Excel.Workbook newWb = newApp.Workbooks.Add();
@@ -152,14 +201,14 @@ namespace CompareTables
 
             
             int i = 2;
-            newWs1.Cells[1, 1] = "Элементы из " + File1.Content + ", которых нет в " + File1.Content;
+            newWs1.Cells[1, 1] = "Элементы из " + File2.Content + ", которых нет в " + File1.Content;
             foreach (var item in data2.Except(data1))
             {
-                
-                newWs1.Cells[i, 1] = item;
+                newWs1.Cells[i, 1] = item.Id;
+                newWs1.Cells[i, 2] = item.Name;
+                newWs1.Cells[i, 3] = item.Number;
+                newWs1.Cells[i, 4] = item.Total;
                 i++;
-                
-
             }
         
 
@@ -167,10 +216,17 @@ namespace CompareTables
             
             newWb.Worksheets.Add();
             Excel.Worksheet newWs2 = (Excel.Worksheet)newWb.Worksheets.get_Item(1);
-            newWs2.Cells[1, 1] = "Элементы из " + File2.Content + ", которых нет в " + File1.Content;
+            newWs2.Cells[1, 1] = "Элементы из " + File1.Content + ", которых нет в " + File2.Content;
+            newWs2.Cells[2, 1] = "Индефикационные номера" ;
+            newWs2.Cells[2, 2] = "Наименование" ;
+            newWs2.Cells[2, 3] = "Количество" ;
+            newWs2.Cells[2, 4] = "Сумма" ;
             foreach (var item in data1.Except(data2))
             {
-                newWs2.Cells[i, 1] = item;
+                newWs2.Cells[i, 1] = item.Id;
+                newWs2.Cells[i, 2] = item.Name;
+                newWs2.Cells[i, 3] = item.Number;
+                newWs2.Cells[i, 4] = item.Total;
                 i++;
             }
 
