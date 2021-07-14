@@ -9,6 +9,7 @@
         Title="Свёрка таблиц" Height="600" Width="800"
         x:Name="mainWindow">
     <Window.Resources>
+        
         <ControlTemplate TargetType="Button" x:Key="btTemplate">
             <Border
                 BorderBrush="{TemplateBinding BorderBrush}" 
@@ -97,6 +98,11 @@
         <Label Grid.Row="2" Grid.Column="1" Content="1-ая ячейка количества файла 2:" Margin="10,110,60,25" FontWeight="Bold" Foreground="DimGray" FontSize="14" Grid.RowSpan="2"/>
         <TextBox Grid.Row="2" Grid.Column="0" Margin="250, 115,70,50"  TextWrapping="Wrap" x:Name="text1count"/>
         <TextBox Grid.Row="2" Grid.Column="1" Margin="250, 115,70,50"  TextWrapping="Wrap" x:Name="text2count" />
+<!--
+        <Rectangle  x:Name="wait0" Fill="AliceBlue" Grid.ColumnSpan="2" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="200"/>
+     -->
+        <Rectangle Stroke="DimGray" StrokeThickness="3" x:Name="wait1" Fill="White" Grid.ColumnSpan="2" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="200" />
+        <Label  Content="Пожалуйста, подождите..." FontWeight="Bold" x:Name="wait2" Foreground="DimGray" FontSize="18" Grid.RowSpan="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
     </Grid>
 </Window>

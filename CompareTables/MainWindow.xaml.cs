@@ -27,7 +27,10 @@ namespace CompareTables
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            wait1.Visibility = Visibility.Hidden;
+            wait2.Visibility = Visibility.Hidden;
+
         }
 
         private void File1_Click(object sender, RoutedEventArgs e)
@@ -100,9 +103,16 @@ namespace CompareTables
         //нажатие на кнопку когда все файлы загружены!!
         private void Action_Click(object sender, RoutedEventArgs e)
         {
+
+            wait1.Visibility = Visibility.Visible; // делаю видимыми ректангел и лейбл А ОН НЕТ            
+            wait2.Visibility = Visibility.Visible;
+
             if ((firstFile == null) || (secondFile == null))
             {
                 MessageBox.Show("Вы не выбрали файлы", "Загрузка данных...", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                wait1.Visibility = Visibility.Hidden;
+                wait2.Visibility = Visibility.Hidden;
                 return;
             }
             /*for (int j = 0; j < VisualTreeHelper.GetChildrenCount(fullGrid); ++j) {
@@ -113,8 +123,8 @@ namespace CompareTables
                     k.Visibility = Visibility.Hidden;
                 }
             }*/
-       
-            
+           
+
             Excel.Application newApp = new Excel.Application(); //создаем excel-приложение
             Excel.Workbook xlWB1; //excel-файл
             Excel.Worksheet xlWS1; //excel-лист
@@ -170,6 +180,9 @@ namespace CompareTables
             //mainWindow.Visibility=Visibility.Visible;
             xlWB1.Close(false); //false значит не сохранять изменения, хотя мы ничего и не изменяли, но пусть
             xlWB2.Close(false);
+
+            wait1.Visibility = Visibility.Hidden; //делаю невидимыми
+            wait2.Visibility = Visibility.Hidden;
            
             newApp.Visible = true; // даём юзеру итоговый файл
             newApp.UserControl = true;
@@ -236,7 +249,7 @@ namespace CompareTables
             }
 
             Field2.Fill = Brushes.Silver;
-
+            lineFix.Stroke = Brushes.Silver;
             Int32 c = 100;
 
         }
